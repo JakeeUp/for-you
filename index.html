@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>💌 You've got something...</title>
+
+<!-- Link-preview cards (kept vague so the shared link doesn't spoil the surprise) -->
+<meta property="og:title" content="💌 You've got something...">
+<meta property="og:description" content="Tap to open 🥺💕">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="💌 You've got something...">
+<meta name="twitter:description" content="Tap to open 🥺💕">
+
+<style>
+  /* ----------  THEME  ---------- */
+  :root {
+    --bg-1: #ff9a9e;
+    --bg-2: #fecfef;
+    --bg-3: #ffc3a0;
+    --card: rgba(255, 255, 255, 0.55);
+    --ink: #6d214f;
+    --yes: #ff4d79;
+    --yes-dark: #e63e66;
+    --no: #c8d0d8;
+    --no-ink: #5a6472;
+    --yes-scale: 1;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  }
+
+  body {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-1));
+    background-size: 400% 400%;
+    animation: gradientShift 14s ease infinite;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  @keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* ----------  FLOATING BACKGROUND HEARTS  ---------- */
+  .hearts-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .hearts-bg span {
+    position: absolute;
+    bottom: -10vh;
+    font-size: 1.6rem;
+    opacity: 0.55;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.6; }
+    100% { transform: translateY(-115vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ----------  CARD  ---------- */
+  .card {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 44px 38px;
+    border-radius: 30px;
+    background: var(--card);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 20px 60px rgba(176, 42, 79, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    max-width: 92vw;
+    animation: cardIn 0.7s cubic-bezier(.2, 1.3, .4, 1) both;
+  }
+  @keyframes cardIn {
+    from { transform: scale(0.7) translateY(30px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .character {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    animation: bob 2.6s ease-in-out infinite;
+  }
+  .character .robin {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity .45s ease;
+    pointer-events: none;
+    filter: drop-shadow(0 6px 12px rgba(109, 33, 79, 0.3));
+  }
+  .emoji-fallback { font-size: 4.5rem; line-height: 1; }
+  .character.has-img .emoji-fallback { display: none; }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%      { transform: translateY(-12px) rotate(3deg); }
+  }
+
+  h1 {
+    color: var(--ink);
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    margin: 14px 0 6px;
+    text-shadow: 0 2px 0 rgba(255, 255, 255, 0.4);
+  }
+  .subtitle {
+    color: var(--ink);
+    opacity: 0.75;
+    margin: 0 0 30px;
+    font-size: clamp(0.95rem, 3vw, 1.15rem);
+  }
+
+  /* ----------  BUTTONS  ---------- */
+  .buttons {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    min-height: 70px;
+  }
+
+  button {
+    font-family: inherit;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    border-radius: 999px;
+    padding: 16px 34px;
+    font-size: 1.15rem;
+  }
+
+  .yes-btn {
+    background: linear-gradient(180deg, var(--yes), var(--yes-dark));
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(255, 77, 121, 0.5);
+    transform: scale(var(--yes-scale));
+    transform-origin: center;
+    transition: box-shadow .2s ease;
+    position: relative;
+    z-index: 3;
+    animation: yesPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes yesPulse {
+    0%, 100% { box-shadow: 0 10px 24px rgba(255, 77, 121, 0.5); }
+    50%      { box-shadow: 0 10px 38px rgba(255, 77, 121, 0.85); }
+  }
+
+  .no-btn {
+    background: var(--no);
+    color: var(--no-ink);
+    box-shadow: 0 6px 14px rgba(90, 100, 114, 0.25);
+    transition:
+      top  .35s cubic-bezier(.34, 1.56, .64, 1),
+      left .35s cubic-bezier(.34, 1.56, .64, 1);
+    will-change: top, left, transform;
+  }
+
+  /* ----------  CELEBRATION OVERLAY  ---------- */
+  .celebration {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: none;
+    place-items: center;
+    text-align: center;
+    background: radial-gradient(circle at center, rgba(255, 220, 235, 0.92), rgba(255, 180, 210, 0.96));
+    backdrop-filter: blur(4px);
+  }
+  .celebration.show { display: grid; animation: fadeIn .5s ease both; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .celebration .big-emoji {
+    font-size: 6rem;
+    animation: pop 0.6s cubic-bezier(.2, 1.6, .4, 1) both;
+  }
+  @keyframes pop {
+    from { transform: scale(0); }
+    to   { transform: scale(1); }
+  }
+  .celebration h1 { font-size: clamp(2rem, 7vw, 3.4rem); color: #c2185b; margin: 6px 0; }
+  .celebration p  { font-size: clamp(1.1rem, 4vw, 1.5rem); color: #ad1457; margin: 0; }
+
+  .confetti {
+    position: fixed;
+    top: -5vh;
+    z-index: 70;
+    pointer-events: none;
+    font-size: 1.8rem;
+    will-change: transform;
+  }
+
+  /* ----------  MUTE TOGGLE  ---------- */
+  .sound-toggle {
+    position: fixed;
+    top: 14px;
+    right: 16px;
+    z-index: 80;
+    background: rgba(255, 255, 255, 0.6);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(176, 42, 79, 0.25);
+    padding: 0;
+  }
+</style>
+</head>
+<body>
+
+  <div class="hearts-bg" id="heartsBg"></div>
+
+  <button class="sound-toggle" id="soundToggle" title="Toggle sound">🔊</button>
+
+  <main class="card" id="card">
+    <div class="character" id="character">
+      <img class="robin" id="robinLove"    alt="" src="images/robin-love.png">
+      <img class="robin" id="robinNeutral" alt="" src="images/robin-neutral.png">
+      <img class="robin" id="robinCry"     alt="" src="images/robin-cry.png">
+      <span class="emoji-fallback" id="emojiFallback">🥺</span>
+    </div>
+    <h1 id="title">Will you go on a date with me?</h1>
+    <p class="subtitle" id="subtitle">(please say yes 💕)</p>
+    <div class="buttons">
+      <button class="yes-btn" id="yesBtn">Yes 💖</button>
+      <button class="no-btn"  id="noBtn">No</button>
+    </div>
+  </main>
+
+  <div class="celebration" id="celebration">
+    <div>
+      <div class="big-emoji" id="bigEmoji">🥳💕</div>
+      <h1 id="successTitle">YAYYY! I knew it! 💖</h1>
+      <p id="successMessage">You just made my whole day 🥰</p>
+    </div>
+  </div>
+
+<script>
+/* ===================================================================
+   PERSONALIZE ME!  Edit the text below to make it yours.
+   =================================================================== */
+const CONFIG = {
+  question:       "Will you go on a date with me?",
+  subtitle:       "(please say yes 💕)",
+  yesText:        "Yes 💖",
+  successTitle:   "YAYYY! I knew it! 💖",
+  successMessage: "You just made my whole day 🥰",
+
+  // --- Email me the moment she says yes (free, via Web3Forms — see README step 1) ---
+  web3formsKey:   "58e3baaf-ff9f-4000-9b26-5c9d68c0619f",   // Web3Forms access key
+  notifySubject:  "She said YES! 💍",
+  notifyMessage:  "Sarah said yes 🥰",
+
+  // The No button cycles through these as you chase it:
+  noTexts: [
+    "No",
+    "Are you sure?",
+    "Really sure??",
+    "Think again 🙁",
+    "Pretty please?",
+    "Don't be like that 😢",
+    "You'll regret it 😭",
+    "I'll be heartbroken 💔",
+    "Reconsider? 🥺",
+    "Catch me first! 😜",
+    "Nope, too slow 🏃",
+    "Just say yes already 😩"
+  ]
+};
+
+/* ----------  apply config text  ---------- */
+document.getElementById('title').textContent          = CONFIG.question;
+document.getElementById('subtitle').textContent       = CONFIG.subtitle;
+document.getElementById('yesBtn').textContent         = CONFIG.yesText;
+document.getElementById('successTitle').textContent   = CONFIG.successTitle;
+document.getElementById('successMessage').textContent = CONFIG.successMessage;
+
+const noBtn  = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+const card   = document.getElementById('card');
+
+/* ===================================================================
+   ROBIN FACE PROGRESSION  (heart-eyes -> straight face -> crying)
+   Auto-activates once images/robin-*.png exist.
+   Until then it harmlessly falls back to the 🥺 emoji.
+   =================================================================== */
+const robinLove    = document.getElementById('robinLove');
+const robinNeutral = document.getElementById('robinNeutral');
+const robinCry     = document.getElementById('robinCry');
+const characterEl  = document.getElementById('character');
+const FULL_SAD_AT  = 8;        // No-dodges needed to reach full waterworks
+let   robinReady   = false;
+
+[robinLove, robinNeutral, robinCry].forEach(img =>
+  img.addEventListener('error', () => { img.style.display = 'none'; }));
+
+robinLove.addEventListener('load', () => {
+  robinReady = true;
+  characterEl.classList.add('has-img');
+  setRobin(0);                 // start head-over-heels in love
+});
+
+function setRobin(progress) {   // 0 = heart-eyes, 0.5 = straight face, 1 = crying
+  if (!robinReady) return;
+  let lo, ne, cr;
+  if (progress <= 0.5) {        // love -> neutral
+    const t = progress / 0.5; lo = 1 - t; ne = t; cr = 0;
+  } else {                      // neutral -> crying
+    const t = (progress - 0.5) / 0.5; lo = 0; ne = 1 - t; cr = t;
+  }
+  robinLove.style.opacity    = lo;
+  robinNeutral.style.opacity = ne;
+  robinCry.style.opacity     = cr;
+}
+
+/* ===================================================================
+   BACKGROUND HEARTS
+   =================================================================== */
+(function spawnBgHearts() {
+  const bg = document.getElementById('heartsBg');
+  const symbols = ['💕','💖','💗','🌸','✨','💘'];
+  for (let i = 0; i < 18; i++) {
+    const h = document.createElement('span');
+    h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.fontSize = (1 + Math.random() * 2) + 'rem';
+    h.style.animationDuration = (8 + Math.random() * 10) + 's';
+    h.style.animationDelay = (-Math.random() * 18) + 's';
+    bg.appendChild(h);
+  }
+})();
+
+/* ===================================================================
+   SOUND (tiny WebAudio blips — no files needed)
+   =================================================================== */
+let soundOn = true;
+let audioCtx = null;
+const soundToggle = document.getElementById('soundToggle');
+soundToggle.addEventListener('click', () => {
+  soundOn = !soundOn;
+  soundToggle.textContent = soundOn ? '🔊' : '🔇';
+});
+function beep(freq, dur = 0.12, type = 'sine', vol = 0.15) {
+  if (!soundOn) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + dur);
+  } catch (e) { /* ignore */ }
+}
+function slamSound() { beep(160, 0.18, 'square', 0.18); beep(90, 0.22, 'sine', 0.12); }
+function happyChord() {
+  [523, 659, 784, 1047].forEach((f, i) =>
+    setTimeout(() => beep(f, 0.5, 'triangle', 0.14), i * 90));
+}
+
+/* ===================================================================
+   THE NO BUTTON — waddles away when you get close
+   =================================================================== */
+let noFixed = false;
+let dodgeCount = 0;
+let lastDodge = 0;
+const FLEE_RADIUS = 130;   // how close the cursor can get (px) before it bolts
+const PAD = 16;            // keep this far from screen edges
+
+function makeNoFixed() {
+  if (noFixed) return;
+  const r = noBtn.getBoundingClientRect();
+  // pull it out of the card so screen-shake / scaling never traps it
+  document.body.appendChild(noBtn);
+  noBtn.style.position = 'fixed';
+  noBtn.style.margin = '0';
+  noBtn.style.zIndex = '50';
+  noBtn.style.left = r.left + 'px';
+  noBtn.style.top  = r.top + 'px';
+  void noBtn.offsetWidth; // force reflow so the first move animates
+  noFixed = true;
+}
+
+/* pick a fresh spot that is safely away from the pointer */
+function pickSpot(px, py) {
+  const w = noBtn.offsetWidth, h = noBtn.offsetHeight;
+  const maxX = Math.max(PAD, window.innerWidth  - w - PAD);
+  const maxY = Math.max(PAD, window.innerHeight - h - PAD);
+  let best = { x: PAD, y: PAD, d: -1 };
+  for (let i = 0; i < 24; i++) {
+    const x = PAD + Math.random() * (maxX - PAD);
+    const y = PAD + Math.random() * (maxY - PAD);
+    const cx = x + w / 2, cy = y + h / 2;
+    const d = Math.hypot(cx - px, cy - py);
+    if (d > 200) return { x, y };           // good enough, take it
+    if (d > best.d) best = { x, y, d };     // otherwise remember the farthest
+  }
+  return best;
+}
+
+function dodge(px, py) {
+  const now = performance.now();
+  if (now - lastDodge < 120) return;        // small cooldown = smoother chase
+  lastDodge = now;
+
+  makeNoFixed();
+  const spot = pickSpot(px, py);
+  noBtn.style.left = spot.x + 'px';
+  noBtn.style.top  = spot.y + 'px';
+
+  // waddle wobble on the way
+  noBtn.animate(
+    [{ transform: 'rotate(-12deg)' }, { transform: 'rotate(10deg)' }, { transform: 'rotate(0deg)' }],
+    { duration: 350, easing: 'ease-in-out' }
+  );
+
+  // escalate the taunt + grow the Yes button
+  dodgeCount++;
+  noBtn.textContent = CONFIG.noTexts[Math.min(dodgeCount, CONFIG.noTexts.length - 1)];
+  setRobin(Math.min(dodgeCount / FULL_SAD_AT, 1));
+  growYes();
+  beep(330 + Math.random() * 120, 0.07, 'square', 0.08);
+}
+
+/* desktop: flee when the cursor sneaks up on it */
+window.addEventListener('mousemove', (e) => {
+  if (!noBtn.isConnected) return;
+  const r = noBtn.getBoundingClientRect();
+  const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  if (Math.hypot(e.clientX - cx, e.clientY - cy) < FLEE_RADIUS) {
+    dodge(e.clientX, e.clientY);
+  }
+});
+
+/* clicking / tapping it never works — it just bolts again */
+noBtn.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  dodge(e.clientX, e.clientY);
+});
+noBtn.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  const t = e.touches[0];
+  dodge(t ? t.clientX : 0, t ? t.clientY : 0);
+}, { passive: false });
+
+/* if the window resizes, make sure it didn't fly off-screen */
+window.addEventListener('resize', () => {
+  if (!noFixed) return;
+  const w = noBtn.offsetWidth, h = noBtn.offsetHeight;
+  const x = Math.min(parseFloat(noBtn.style.left), window.innerWidth  - w - PAD);
+  const y = Math.min(parseFloat(noBtn.style.top),  window.innerHeight - h - PAD);
+  noBtn.style.left = Math.max(PAD, x) + 'px';
+  noBtn.style.top  = Math.max(PAD, y) + 'px';
+});
+
+/* ===================================================================
+   THE YES BUTTON — grows + slams every time No runs
+   =================================================================== */
+let yesScale = 1;
+const MAX_SCALE = 6;
+const GROWTH = 1.28;
+
+function growYes() {
+  yesScale = Math.min(yesScale * GROWTH, MAX_SCALE);
+  document.documentElement.style.setProperty('--yes-scale', yesScale);
+
+  // SLAM: overshoot past the target, then settle
+  yesBtn.animate([
+    { transform: `scale(${yesScale * 1.35})`, offset: 0 },
+    { transform: `scale(${yesScale * 0.9})`,  offset: 0.55 },
+    { transform: `scale(${yesScale * 1.04})`, offset: 0.8 },
+    { transform: `scale(${yesScale})`,        offset: 1 }
+  ], { duration: 380, easing: 'cubic-bezier(.2, 1.5, .4, 1)' });
+
+  screenShake();
+  slamSound();
+}
+
+/* shake only the card (the No button lives on <body>, so it stays put) */
+function screenShake() {
+  const m = Math.min(4 + dodgeCount, 16);
+  card.animate([
+    { transform: 'translate(0,0)' },
+    { transform: `translate(${-m}px, ${m/2}px)` },
+    { transform: `translate(${m}px, ${-m/2}px)` },
+    { transform: `translate(${-m/2}px, ${-m}px)` },
+    { transform: 'translate(0,0)' }
+  ], { duration: 220, easing: 'ease-in-out' });
+}
+
+/* ===================================================================
+   THE YES MOMENT 🎉
+   =================================================================== */
+yesBtn.addEventListener('click', sayYes);
+let answered = false;
+
+/* fire-and-forget email so you get pinged the moment she says yes */
+function notifyYes() {
+  const key = CONFIG.web3formsKey;
+  if (!key || key === 'YOUR_ACCESS_KEY_HERE') return;   // not set up yet -> skip silently
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      access_key: key,
+      subject:   CONFIG.notifySubject,
+      from_name: 'Your Date Page 💕',
+      message:   CONFIG.notifyMessage + '\n\nWhen: ' + new Date().toLocaleString()
+    })
+  }).catch(() => {});   // never let a network hiccup block the celebration
+}
+
+function sayYes() {
+  if (answered) return;
+  answered = true;
+  notifyYes();
+  happyChord();
+  if (robinReady) {
+    document.getElementById('bigEmoji').innerHTML =
+      '<img src="images/robin-love.png" alt="" ' +
+      'style="width:180px;height:180px;object-fit:contain;' +
+      'filter:drop-shadow(0 8px 14px rgba(0,0,0,.25))">';
+  }
+  if (noBtn.isConnected) noBtn.remove();
+
+  const cel = document.getElementById('celebration');
+  cel.classList.add('show');
+  burstConfetti();
+  const rain = setInterval(burstConfetti, 380);
+  setTimeout(() => clearInterval(rain), 4000);
+}
+
+function burstConfetti() {
+  const symbols = ['💖','💕','🎉','✨','💘','🌸','💝','❤️'];
+  for (let i = 0; i < 24; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.fontSize = (1.2 + Math.random() * 2) + 'rem';
+    document.body.appendChild(c);
+    const driftX = (Math.random() - 0.5) * 240;
+    c.animate([
+      { transform: 'translate(0, -10vh) rotate(0deg)', opacity: 1 },
+      { transform: `translate(${driftX}px, 110vh) rotate(${Math.random()*720-360}deg)`, opacity: 1 }
+    ], { duration: 2600 + Math.random() * 1800, easing: 'cubic-bezier(.3,.1,.5,1)' })
+     .onfinish = () => c.remove();
+  }
+}
+</script>
+</body>
+</html>
